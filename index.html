@@ -11,6 +11,7 @@
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" type="text/css">
+    <link href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" rel="stylesheet" type="text/css">
     <!--[if lte IE 8]>
         <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" rel="stylesheet" type="text/css">
         <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
@@ -159,8 +160,8 @@
             <h2>My Taxi Ride</h2>
             <p>Calculates the cost of a taxi ride in Cairo, Egypt</p>
             <p>To specify the path, select the taxi path drawing tool (just under zoom buttons), click on the map to specify
-               points. Double-click to end the path. After you finish, clicking the path will tell you its length & how much
-               it will cost you
+               points. Click multiple times to specify more points. Double-click to end the path. After you finish, hovering 
+               on the path will tell you its length & how much it will cost you.
             </p>
         </div>
 
@@ -202,6 +203,7 @@
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
+    <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
 
     <script type="text/javascript">
         var map;
@@ -224,7 +226,8 @@
                 polyline: {
                     metric: true,
                     shapeOptions: {
-                        color: 'green'
+                        color: 'green',
+                        weight: 8
                     }
                 },
                 circle: false, polygon: false, marker: false, rectangle: false
@@ -254,8 +257,8 @@
                 layer = e.layer;
 
             if (type === 'polyline') {
-                layer.bindPopup("Path length = <b>" + L.GeometryUtil.readableDistance(layer.length(), true) + "</b><br>" +
-                                "Cost = <b>" + pathCost(layer.length()) + "</b> EGP");
+                layer.bindLabel("Path length = " + L.GeometryUtil.readableDistance(layer.length(), true) + "<br>" +
+                                "Cost = " + pathCost(layer.length()) + " EGP");
             }
 
             drawnItems.addLayer(layer);
