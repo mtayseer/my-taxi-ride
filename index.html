@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculates the cost of a taxi ride in Cairo, Egypt">
+    <meta name="author" content="Mohammad Tayseer">
+    <title>My Taxi Ride</title>
+
+    <!-- Core CSS -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" type="text/css">
+    <!--[if lte IE 8]>
+        <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" rel="stylesheet" type="text/css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
+    <![endif]-->
+    <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.draw/leaflet.draw.css" />
+    <!-- Custom styles for this template -->
+    <style>
+        html, body, #sidebar, #container {
+            height: 100%;
+            margin: 0px;
+        }
+        body {
+            padding-top: 50px;
+        }
+        label {
+            font-weight: normal;
+        }
+        #map {
+            height: 100%;
+            margin: 0px;
+            -webkit-box-shadow: 0 -1px 10px rgba(0,0,0,0.5);
+            -moz-box-shadow: 0 -1px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 -1px 10px rgba(0,0,0,0.5);
+        }
+        #loading {
+            position: absolute;
+            width: 220px;
+            height: 19px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -110px;
+            z-index: 20001;
+        }
+        .navbar .navbar-brand {
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+            white-space: nowrap;
+        }
+        .tt-dropdown-menu {
+            overflow: auto;
+        }
+        .tt-hint, .tt-query {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .typeahead-header {
+            margin: 0 5px 5px 5px;
+            padding: 3px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        .search-container {
+            width: 250px;
+        }
+        #searchbox {
+            -webkit-border-top-left-radius: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            -moz-border-top-left-radius: 4px;
+            -moz-border-bottom-left-radius: 4px;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .leaflet-popup-content {
+            margin-top: 14px;
+            margin-bottom: 0px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        .panel-heading a:hover {
+            text-decoration: none;
+        }
+        a.toggle {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            display: block;
+            -webkit-border-radius: 0 !important;
+            -moz-border-radius: 0 !important;
+            border-radius: 0 !important;
+            -webkit-border-top-right-radius: 4px !important;
+            -moz-border-top-right-radius: 4px !important;
+            border-top-right-radius: 4px !important;
+            -webkit-border-bottom-right-radius: 4px !important;
+            -moz-border-bottom-right-radius: 4px !important;
+            border-bottom-right-radius: 4px !important;
+            background-color: #222;
+            color: white;
+            opacity: 0.8;
+            z-index: 100;
+        }
+        a:hover.toggle {
+            background-color: #222;
+            color: white;
+            opacity: 1;
+        }
+        @media (max-width: 992px) {
+            .navbar .navbar-brand {
+                font-size: 18px;
+                float: left;
+            }
+            .search-container {
+                width: 150px;
+            }
+            .leaflet-control-attribution {
+                display: none;
+            }
+        }
+        @media (max-width: 768px){
+            .search-container {
+                width: 100%;
+            }
+        }
+        /* Print Handling */
+        @media print {
+            .navbar, .toggle, #sidebar {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.2.0/respond.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">My Taxi Ride</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#aboutModal').modal('show'); return false;"><i class="icon-question-sign" style="color: white"></i>&nbsp;&nbsp;About</a></li>
+                <li><a href="https://github.com/mtayseer/my-taxi-ride" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="icon-github-alt" style="color: white"></i>&nbsp;&nbsp;GitHub</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://mtayseer.net">By Mohammad Tayseer</a></li>
+            </ul>
+        </div><!--/.navbar-collapse -->
+    </div>
+
+    <div class="row" id="container">
+        <div class="col-sm-3 col-lg-3" id="sidebar" style="padding: 10px; overflow: auto;">
+            <h2>My Taxi Ride</h2>
+            Calculates the cost of a taxi ride in Cairo, Egypt
+        </div>
+        <div class="col-sm-9 col-lg-9" id="map">
+        </div>
+    </div>
+
+    <div class="modal fade" id="aboutModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">My Taxi Ride</h4>
+                </div>
+
+                <div class="modal-body">
+                     <ul id="aboutTabs" class="nav nav-tabs">
+                        <li class="active"><a href="#about" data-toggle="tab"><i class="icon-question-sign"></i>&nbsp;About the project</a></li>
+                        <li><a href="#disclaimer" data-toggle="tab"><i class="icon-exclamation-sign"></i>&nbsp;Disclaimer</a></li>
+                    </ul>
+                    <div id="aboutTabsContent" class="tab-content" style="padding-top: 10px;">
+                        <div class="tab-pane fade active in" id="about">
+                            <p>Calculates the cost of a taxi ride in Cairo, Egypt.</p>
+                            <p>Made by <a href="http://mtayseer.net">Mohammad Tayseer</a>. Open Source (<a href="https://github.com/mtayseer/my-taxi-ride/blob/master/LICENSE">MIT License</a>) on Github. Uses <a href="https://github.com/bmcbride/bootleaf" target="_blank">BootLeaf</a> and <a href="http://leafletjs.com/" target="_blank">Leaflet</a>.</p>
+                        </div>
+                        <div class="tab-pane fade text-danger" id="disclaimer">
+                            <p>The data provided on this site is for informational and planning purposes only.</p>
+                            <p>Absolutely no accuracy or completeness guarantee is implied or intended. All information on this map is subject to such variations and corrections as might result from a complete title search and/or accurate field survey.</p>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
+
+    <script type="text/javascript">
+        var map;
+
+        $(window).resize(function() {
+            $('.tt-dropdown-menu').css('max-height', $('#container').height()-$('.navbar').height()-20);
+        });
+
+        $('input[name="basemapLayers"]').change(function () {
+            // Remove unchecked layers
+            $('input:radio[name="basemapLayers"]:not(:checked)').each(function () {
+                map.removeLayer(window[$(this).attr('id')]);
+            });
+            // Add checked layer
+            $('input:radio[name="basemapLayers"]:checked').each(function () {
+                map.addLayer(window[$(this).attr('id')]);
+            });
+        });
+
+        $('input:checkbox[name="overlayLayers"]').change(function () {
+            var layers = [];
+            function sortByKey(array, key) {
+                return array.sort(function (a, b) {
+                    var x = a[key];
+                    var y = b[key];
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                });
+            }
+            if ($('#' + $(this).attr('id')).is(':checked')) {
+                $('input:checkbox[name="overlayLayers"]').each(function () {
+                    // Remove all overlay layers
+                    map.removeLayer(window[$(this).attr('id')]);
+                    if ($('#' + $(this).attr('id')).is(':checked')) {
+                        // Add checked layers to array for sorting
+                        layers.push({
+                            'z-index': $(this).attr('z-index'),
+                            'layer': $(this)
+                        });
+                    }
+                });
+                // Sort layers array by z-index
+                var orderedLayers = sortByKey(layers, 'z-index');
+                // Loop through ordered layers array and add to map in correct order
+                $.each(orderedLayers, function () {
+                    map.addLayer(window[$(this)[0].layer[0].id]);
+                });
+            } else {
+                // Simply remove unchecked layers
+                map.removeLayer(window[$(this).attr('id')]);
+            }
+        });
+
+        // Basemap Layers
+        var mapboxLayer = L.tileLayer("https://{s}.tiles.mapbox.com/v3/examples.map-zr0njcqy/{z}/{x}/{y}.png", {
+            attribution: 'Tiles courtesy of <a href="http://www.mapbox.com/" target="_blank">MapBox</a>. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
+        });
+
+        map = L.map("map", {
+            zoom: 11,
+            center: new L.LatLng(30.067, 31.264),
+            layers: [mapboxLayer]
+        });
+
+        // Larger screens get scale control and expanded layer control
+        if (document.body.clientWidth <= 767) {
+            var isCollapsed = true;
+        } else {
+            var isCollapsed = false;
+            map.addControl(scaleControl);
+        };
+
+    </script>
+  </body>
+</html>
