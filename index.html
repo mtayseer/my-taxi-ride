@@ -50,9 +50,6 @@
             color: white;
             white-space: nowrap;
         }
-        .tt-dropdown-menu {
-            overflow: auto;
-        }
         .tt-hint, .tt-query {
             display: block;
             width: 100%;
@@ -209,21 +206,6 @@
     <script type="text/javascript">
         var map;
 
-        $(window).resize(function() {
-            $('.tt-dropdown-menu').css('max-height', $('#container').height()-$('.navbar').height()-20);
-        });
-
-        $('input[name="basemapLayers"]').change(function () {
-            // Remove unchecked layers
-            $('input:radio[name="basemapLayers"]:not(:checked)').each(function () {
-                map.removeLayer(window[$(this).attr('id')]);
-            });
-            // Add checked layer
-            $('input:radio[name="basemapLayers"]:checked').each(function () {
-                map.addLayer(window[$(this).attr('id')]);
-            });
-        });
-
         $('input:checkbox[name="overlayLayers"]').change(function () {
             var layers = [];
             function sortByKey(array, key) {
@@ -268,13 +250,44 @@
             layers: [mapboxLayer]
         });
 
-        // Larger screens get scale control and expanded layer control
-        if (document.body.clientWidth <= 767) {
-            var isCollapsed = true;
-        } else {
-            var isCollapsed = false;
-            map.addControl(scaleControl);
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            //position: 'bottomright',
+            draw: {
+                polyline: {
+                    metric: true
+                },
+                circle: {
+                    shapeOptions: {
+                        color: '#662d91'
+                    }
+                }
+            },
+            edit: false
+        });
+        map.addControl(drawControl);
+
+        L.Polyline.prototype.length = function() {
+            var length = 0;
+            for (var i = 0; i < this._latlngs.length - 1; i++) {
+                length += this._latlngs[i].distanceTo(this._latlngs[i+1]);
+            }
+            return length;
         };
+
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'polyline') {
+                var length = layer.length();
+                layer.bindPopup(L.GeometryUtil.readableDistance(length, true));
+            }
+
+            drawnItems.addLayer(layer);
+        });
 
     </script>
   </body>
