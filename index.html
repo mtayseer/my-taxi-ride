@@ -136,6 +136,7 @@
 
   <body>
 
+    <!-- Navigation -->
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -148,23 +149,27 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#aboutModal').modal('show'); return false;"><i class="icon-question-sign" style="color: white"></i>&nbsp;&nbsp;About</a></li>
-                <li><a href="https://github.com/mtayseer/my-taxi-ride" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="icon-github-alt" style="color: white"></i>&nbsp;&nbsp;GitHub</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://mtayseer.net">By Mohammad Tayseer</a></li>
             </ul>
         </div>
     </div>
-
+    
     <div class="row" id="container">
+        <!-- Sidebar -->
         <div class="col-sm-3 col-lg-3" id="sidebar" style="padding: 10px; overflow: auto;">
             <h2>My Taxi Ride</h2>
-            Calculates the cost of a taxi ride in Cairo, Egypt
+            <p>Calculates the cost of a taxi ride in Cairo, Egypt</p>
+            <p>To specify the path, select the taxi path drawing tool (just under zoom buttons), click on the map to specify
+               points. Double-click to end the path. After you finish, clicking the path will tell you its length & how much
+               it will cost you
+            </p>
         </div>
+
+        <!-- Map -->
         <div class="col-sm-9 col-lg-9" id="map">
         </div>
     </div>
 
+    <!-- aboutModal -->
     <div class="modal fade" id="aboutModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -181,7 +186,7 @@
                     <div id="aboutTabsContent" class="tab-content" style="padding-top: 10px;">
                         <div class="tab-pane fade active in" id="about">
                             <p>Calculates the cost of a taxi ride in Cairo, Egypt.</p>
-                            <p>Made by <a href="http://mtayseer.net">Mohammad Tayseer</a>. Open Source (<a href="https://github.com/mtayseer/my-taxi-ride/blob/master/LICENSE">MIT License</a>) on Github. Uses <a href="https://github.com/bmcbride/bootleaf" target="_blank">BootLeaf</a> and <a href="http://leafletjs.com/" target="_blank">Leaflet</a>.</p>
+                            <p>Made by <a href="http://mtayseer.net">Mohammad Tayseer</a>. Open Source (<a href="https://github.com/mtayseer/my-taxi-ride/blob/master/LICENSE">MIT License</a>) on <a href="https://github.com/mtayseer/my-taxi-ride">Github</a>. Uses <a href="https://github.com/bmcbride/bootleaf" target="_blank">BootLeaf</a> and <a href="http://leafletjs.com/" target="_blank">Leaflet</a>.</p>
                         </div>
                         <div class="tab-pane fade text-danger" id="disclaimer">
                             <p>The data provided on this site is for informational and planning purposes only.</p>
@@ -193,9 +198,9 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
 
     <script type="text/javascript">
@@ -217,16 +222,17 @@
         var drawControl = new L.Control.Draw({
             draw: {
                 polyline: {
-                    metric: true
-                },
-                circle: {
+                    metric: true,
                     shapeOptions: {
-                        color: '#662d91'
+                        color: 'green'
                     }
-                }
+                },
+                circle: false, polygon: false, marker: false, rectangle: false
             },
             edit: false
         });
+        // Change the tooltip text of the control. This should be done before the control is added to the map
+        L.drawLocal.draw.toolbar.buttons.polyline = 'Draw the taxi path';
         map.addControl(drawControl);
 
         L.Polyline.prototype.length = function() {
@@ -254,6 +260,8 @@
 
             drawnItems.addLayer(layer);
         });
+
+
 
     </script>
   </body>
