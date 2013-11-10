@@ -248,9 +248,16 @@
 
         function pathCost(lengthInM) {
             var lengthInKM = lengthInM / 1000;
-            var cost = 2.5 + 1.25 * (lengthInKM - 1);
+            var cost;
+            if (lengthInKM>2){
+            cost = 2.5 + 1.25 * (lengthInKM - 1);
+            }else{
+              cost = 2.5;
+            }
+            
             return Math.round(cost * 100) / 100;
         }
+
 
         map.on('draw:created', function (e) {
             var type = e.layerType,
