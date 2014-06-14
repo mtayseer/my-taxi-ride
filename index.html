@@ -9,10 +9,10 @@
 
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" type="text/css">
+    <link href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" rel="stylesheet" type="text/css">
     <link href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" rel="stylesheet" type="text/css">
     <!--[if lte IE 8]>
-        <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" rel="stylesheet" type="text/css">
+        <link href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.ie.css" rel="stylesheet" type="text/css">
         <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
     <![endif]-->
     <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.draw/leaflet.draw.css" />
@@ -200,69 +200,10 @@
 
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
     <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
 
-    <script type="text/javascript">
-        var map;
-
-        var mapboxLayer = L.tileLayer("https://{s}.tiles.mapbox.com/v3/examples.map-zr0njcqy/{z}/{x}/{y}.png", {
-            attribution: 'Tiles courtesy of <a href="http://www.mapbox.com/" target="_blank">MapBox</a>. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
-        });
-
-        map = L.map("map", {
-            zoom: 11,
-            center: new L.LatLng(30.067, 31.264),
-            layers: [mapboxLayer]
-        });
-
-        var drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
-
-        var drawControl = new L.Control.Draw({
-            draw: {
-                polyline: {
-                    metric: true,
-                    shapeOptions: {
-                        color: 'green',
-                        weight: 8
-                    }
-                },
-                circle: false, polygon: false, marker: false, rectangle: false
-            },
-            edit: false
-        });
-        // Change the tooltip text of the control. This should be done before the control is added to the map
-        L.drawLocal.draw.toolbar.buttons.polyline = 'Draw the taxi path';
-        map.addControl(drawControl);
-
-        L.Polyline.prototype.length = function() {
-            var length = 0;
-            for (var i = 0; i < this._latlngs.length - 1; i++) {
-                length += this._latlngs[i].distanceTo(this._latlngs[i+1]);
-            }
-            return length;
-        };
-
-        function pathCost(lengthInM) {
-            var lengthInKM = lengthInM / 1000;
-            var cost = Math.max(2.5, 2.5 + 1.25 * (lengthInKM - 1));
-            return Math.round(cost * 4) / 4;
-        }
-
-        map.on('draw:created', function (e) {
-            var type = e.layerType,
-                layer = e.layer;
-
-            if (type === 'polyline') {
-                layer.bindLabel("Path length = " + L.GeometryUtil.readableDistance(layer.length(), true) + "<br>" +
-                                "Cost = " + pathCost(layer.length()) + " EGP");
-            }
-
-            drawnItems.addLayer(layer);
-        });
-
-    </script>
+    <script src="taxi-ride.js"></script>
   </body>
 </html>
