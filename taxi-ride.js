@@ -92,9 +92,9 @@ map.on('draw:created', function (e) {
         }).done(function(response) {
             console.log(response);
             var line = decode(response['route_geometry'], 6);
-            //L.polyline(line).addTo(map);
-            layer.setLatLngs(line).bindLabel("Path length = " + L.GeometryUtil.readableDistance(layer.length(), true) + "<br>" +
-                        "Cost = " + pathCost(layer.length()) + " EGP");
+            var costMsg = "Path length = " + L.GeometryUtil.readableDistance(layer.length(), true) + "<br>" +
+                        "Cost = " + pathCost(layer.length()) + " EGP";
+            layer.setLatLngs(line).bindLabel(costMsg).bindPopup(costMsg);
         });
 
         
