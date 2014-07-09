@@ -43,7 +43,7 @@ L.Polyline.prototype.length = function() {
 
 function pathCost(lengthInM) {
     var lengthInKM = lengthInM / 1000;
-    var cost = Math.max(2.5, 2.5 + 1.25 * (lengthInKM - 1));
+    var cost = Math.max(3, 3 + 1.40 * (lengthInKM - 1));
     return Math.round(cost * 4) / 4;
 }
 
