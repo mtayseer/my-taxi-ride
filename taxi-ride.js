@@ -1,7 +1,8 @@
 var map;
 
-var mapboxLayer = L.tileLayer("https://{s}.tiles.mapbox.com/v3/examples.map-zr0njcqy/{z}/{x}/{y}.png", {
-    attribution: 'Tiles courtesy of <a href="http://www.mapbox.com/" target="_blank">MapBox</a>. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
+var mapboxLayer = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    accessToken: 'pk.eyJ1IjoibXRheXNlZXIiLCJhIjoiY2lwOGh2ajY2MDAwdW5xbmwwbXkyeDB0byJ9.48VPa3BIcLxf9ygWsmtZyQ'
 });
 
 map = L.map("map", {
@@ -97,7 +98,7 @@ map.on('draw:created', function (e) {
             layer.setLatLngs(line).bindLabel(costMsg).bindPopup(costMsg);
         });
 
-        
+
     }
 
     drawnItems.addLayer(layer);
